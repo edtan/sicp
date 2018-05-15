@@ -1,0 +1,11 @@
+;Exercise 1.25.  Alyssa P. Hacker complains that we went to a lot of extra work in writing expmod. After all, she says, since we already know how to compute exponentials, we could have simply written
+
+(define (expmod base exp m)
+  (remainder (fast-expt base exp) m))
+
+Is she correct? Would this procedure serve as well for our fast prime tester? Explain.
+
+
+As hinted in footnote 46, the original fast-expt method would result in numbers much larger than the test prime (parameter m in the definition above).  For example, suppose we tested with a = 2, n = 1024.  We would have to evaluate and store values of up to 2^1024 (1.79e308) using the original fast-expt, but with the modified expmod, the intermediate arguments would all be less than 1024.
+
+I'm not exactly sure about the specifics on why it would increase the computation time specifically, but perhaps in order to represent extremely large numbers, new data types with larger data structures would need to be used.  Arithemtic on these larger data types would involve more computations and memory access.
