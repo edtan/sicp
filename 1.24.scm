@@ -61,3 +61,5 @@
 ;1000037 *** 2418
 
 ;As the Fermat test grows as O(log n), we should expect testing primes near 1000000 would take approximately log_2(1000000) /log_2(1000) = 2 times as long as testing primes near 1000.  (The base of 2 was chosen because expmod using squaring, but any base would return the same computation.)  The observed results above agree with the predicted increase in runtime.
+
+; Also, note that the overall run times for the Fermat test was much longer than the runtimes for the O(sqrt(n)) test in exercise 1.22.  This is because we chose to test 1000 numbers in the Fermat test before declaring the number as prime. It is unclear what a suitable number is for this test, and it is likely we would have to increase this number as the test candidates get much larger.
