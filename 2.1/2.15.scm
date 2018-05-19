@@ -1,0 +1,4 @@
+#lang sicp
+;Exercise 2.15.  Eva Lu Ator, another user, has also noticed the different intervals computed by different but algebraically equivalent expressions. She says that a formula to compute with intervals using Alyssa's system will produce tighter error bounds if it can be written in such a form that no variable that represents an uncertain number is repeated. Thus, she says, par2 is a ``better'' program for parallel resistances than par1. Is she right? Why?
+
+;Yes, Eva is right.  As we saw in 2.14, par2 produced much tighter error bounds than par1.  The reason is because each time any arithemtic is done on an interval, the uncertainty can only increase because of the way we have defined interval arithmetic.  If each variable is only used once, we minimize the uncertainty introduced by that variable.  If a variable is used more than once, it will increase the uncertainty in the final interval more than once.

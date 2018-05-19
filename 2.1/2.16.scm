@@ -1,0 +1,7 @@
+#lang sicp
+
+;Exercise 2.16.  Explain, in general, why equivalent algebraic expressions may lead to different answers. Can you devise an interval-arithmetic package that does not have this shortcoming, or is this task impossible? (Warning: This problem is very difficult.)
+
+; The interval arithmetic that was defined in this section does not have the property that each element has an inverse.  That is, if you have an interval A, there is no unique interval A' such that AA' = A'A = I, where I is the 'identity' interval (which was somewhat implicitly defined as [1 1]).  In multiplicative operations, the inverse is usually defined to be 1/A.  So if A/A is not I, it follows that I itself can't be uniquely represented, as B/B could be different than I, C/C would be something else, and so on.  This would mean that equivalent algebraic expressions would evaluate to different values.
+
+; In order to create an interval arithemtic package, we'd have to define operators in such a way that they would be consistent with algebraic operations.  I.e. all our usual 'laws' of arithemtic are respected - commutativity, associativity, distributivity, additive inverse, multiplicative inverse, 0 element, identity element, etc...
