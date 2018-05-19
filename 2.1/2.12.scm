@@ -15,9 +15,9 @@
 
 
 (define (make-center-percent c p)
-  (let ((half-tolerance (/ (* (/ p 100) c)
+  (let ((tolerance (/ (* (/ p 100) c)
                            2.0)))
-    (make-center-width c half-tolerance)))
+    (make-center-width c tolerance)))
 (define (percent interval) (* (/ (* 2 (width interval)) (center interval)) 100.0))
 
 (make-center-percent 50 10)
