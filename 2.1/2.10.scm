@@ -12,16 +12,16 @@
     (make-interval (min p1 p2 p3 p4)
                    (max p1 p2 p3 p4))))
 
-(define (width interval)
-  (/ (- (upper-bound interval) (lower-bound interval))
-     2))
+
+(define (mixed? interval)    (and (< (lower-bound interval) 0) (> (upper-bound interval) 0)))
 (define (div-interval x y)
-  (if (width y)
+  (if (mixed? y)
       (display "Error: Can't divide by an interval that has zero width!")
       (mul-interval x
                     (make-interval (/ 1.0 (upper-bound y))
                                    (/ 1.0 (lower-bound y))))))
 
 (let ((a (make-interval 0 10))
-      (b (make-interval 1 1)))
+      (b (make-interval -1 10)))
   (div-interval a b))
+
