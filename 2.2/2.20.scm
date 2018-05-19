@@ -25,4 +25,27 @@
 ;(same-parity 2 3 4 5 6 7)
 ;(2 4 6)
 
+(define (append list1 list2)
+  (if (null? list1)
+      list2
+      (cons (car list1) (append (cdr list1) list2))))
+
 (define (same-parity . l)
+  (define (even? x) (= (remainder x 2) 0))
+  (define (parity-matches? x y) (even? (+ x y))) ; if two numbers have the same parity, their sum is even
+  (let ((first (car l)))
+    (define (iter remaining result)
+      (cond ((null? remaining) result)
+            ((parity-matches? first (car remaining)) (iter (cdr remaining) (append result (cons (car remaining) nil))))
+            (else (iter (cdr remaining) result))))
+    (iter l nil)))
+
+
+(same-parity 1 2 3 4 5 6 7)
+;(mcons 1 (mcons 3 (mcons 5 (mcons 7 '()))))
+
+(same-parity 2 3 4 5 6 7)
+;(mcons 2 (mcons 4 (mcons 6 '())))
+
+(same-parity 1 2 1 1 10 7 13 5 3 2)
+;(mcons 1 (mcons 1 (mcons 1 (mcons 7 (mcons 13 (mcons 5 (mcons 3 '())))))))
