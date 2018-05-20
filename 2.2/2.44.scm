@@ -28,3 +28,4 @@
         (below painter (beside smaller smaller)))))
 
 (paint (up-split einstein 2))
+(paint (square-limit einstein 5))
