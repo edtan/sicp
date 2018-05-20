@@ -45,51 +45,42 @@
   (accumulate + 0 (map * v w)))
 
 
-; Let the representation for a single position be a list of lists, where the jth list represents the jth column, the ith entry in that list represents the ith row, an entry of 0 represents the absence of a queen in that location, and a 1 means a queen is present in that location.  Also, if there are no queens in the (j+1)th column up to the board-size column, the (j+1)th up to the board-size lists can be omitted from the representation.  For example, if board-size = 3 and we have the following position:
+; Let the representation for a single position be a list of numbers, where the jth entry represents the jth column, and the value of the jth entry indicates which row the queen is on.  (This assumes that there is only 1 queen per column.)  If there are no queens in the (j+1)th column up to the board-sizeth column, the (j+1)th up to the board-size entries can be omitted from the representation.  For example, if board-size = 3 and we have the following position:
 ;0 0 0
-;1 1 0
-;0 0 0
-;this can be represented by ((0 1 0) (0 1 0) (0 0 0)), or also ((0 1 0) (0 1 0)).  Due to the way the n-queens algorithm described in the problem works, we only need to use the latter representation.
+;0 1 0
+;1 0 0
+;this is represented by (3 2).
 
-; as described in the problem, empty-board means an empty set of positions, which also corresponds to a position with no queens according to our representation.
+; as described in the problem, empty-board means an empty set of positions, which also corresponds to a position with no queens according to our representation.  note that this is transformed into (list nil) for us in the provided definition of queens
 (define (empty-board) nil)
 
 ; adjoin-position takes a position that only has queens in the first (column - 1) columns (i.e. a list with only (column - 1) sublists).
-; it then creates a new position by adding a queen in the new-rowth row in the columnth column.  (it adds a list with a 1 in the new-rowth entry)
-; TODO: it looks like the column parameter isn't used, perhaps due to our representation. (it would be used if we didn't admit representations that had fewer than board-size columns).  it could possibly be used for error checking.
+; it then creates a new position by adding a queen in the new-rowth row in the columnth column.
+; WARNING: if you set column to a column within the position, it will truncate the position to the length of column
 (define (adjoin-position new-row column position)
-  (let ((board-size (if (null? position)
-                         0
-                         (length (car position)))))
-    (append position
-            (list (map (lambda (x) (if (= x new-row)
-                                       1
-                                       0))
-                       (enumerate-interval 1 board-size))))))
+  (cond ((and (null? position) (> column 1))
+         (cons 0 (adjoin-position new-row (- column 1) nil)))  ; fill in 0s if columns don't already exist for them and we're putting a queen in a column further up
+         ((= column 1) (cons new-row nil))   ; set column to new-row
+         (else (cons (car position) (adjoin-position new-row (- column 1) (cdr position))))))
 
-(adjoin-position 1 1 nil)
+;(display (adjoin-position 1 1 (list nil)))
+;(newline)
+;(1)
+;(display (adjoin-position 3 2 (list 1)))
+;(newline)
+;(1 3)
 
-(display (adjoin-position 3 2 (list (list 1 2 3 4 5))))
-(newline)
-;((1 2 3 4 5) (0 0 1 0 0))
-
-(display (adjoin-position 5 2 (list (list 1 2 3 4 5) (list 4 3 0 0 0))))
-(newline)
-;((1 2 3 4 5) (4 3 0 0 0) (0 0 0 0 1))
+;(display (adjoin-position 5 5 (list 1 2 3)))
+;(newline)
+;(1 2 3 0 5)
 
 ; safe checks if the queen in the kth column is safe, given a position consisting of queens only in the first k columns (1 per column), and where the queens in the first k-1 columns are all safe with respect to each other.
 (define (safe? k position)
-  (define (same-row? col1 col2) (= (dot-product col1 col2) 1)) ; ones lined up in the same position indicate the same row
-  (define (row column)                                         ; return the row number of the queen in a given column
-    (if (or (null? column) (= (car column) 1))
-        1
-        (+ 1 (row (cdr column)))))
-  (define (same-diag? col1 col1-idx col2 col2-idx)
-    (let ((col1-row-idx (row col1))
-          (col2-row-idx (row col2))
-          (col-diff (- col2-idx col1-idx)))
-      (cond ((or (= (+ col1-row-idx col-diff) col2-row-idx)
-                 (= (- col1-row-idx col-diff) col2-row-idx))
+  (define (same-row? col1 col2) (= (col1 col2)))
+  (define (same-diag? queen1-row queen1-col queen2-row queen2-col)
+    (let ((col-diff (- queen2-col queen1-col)))
+      (cond ((or (= (+ queen1-row col-diff) queen2-row)
+                 (= (- queen1-row col-diff) queen2-row))
              false)
             (else true))))
   (let ((kth-col (list-ref position (- k 1))))
@@ -102,12 +93,12 @@
                      (enumerate-interval 1 (- k 1))))))
 
 
-(flatmap
-          (lambda (rest-of-queens)
-            (map (lambda (new-row)
-                   (adjoin-position new-row 1 rest-of-queens))
-                 (enumerate-interval 1 3)))
-          nil)
+;(flatmap
+;          (lambda (rest-of-queens)
+;            (map (lambda (new-row)
+;                   (adjoin-position new-row 1 rest-of-queens))
+;                 (enumerate-interval 1 3)))
+;          nil)
 
 
 (define (queens board-size)
@@ -124,4 +115,5 @@
           (queen-cols (- k 1))))))
   (queen-cols board-size))
 
-;(queens 1)
+(display (queens 1))
+(display (queens 2))
