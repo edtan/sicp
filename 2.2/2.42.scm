@@ -141,3 +141,5 @@
 (display (length (queens 8)))
 (newline)
 ;92
+(length (queens 10))
+;724
