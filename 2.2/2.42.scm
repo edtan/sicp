@@ -45,6 +45,8 @@
   (accumulate + 0 (map * v w)))
 
 
+; This one took a while.  The main problem was that I chose a bad representation at the beginning - I initially used a list of lists denoting a matrix, with 0s meaning the absence of a queen, and a 1 meaning the presence of a queen.  Once I had simplified the representation, this problem was straightforward to implement.
+
 ; Let the representation for a single position be a list of numbers, where the jth entry represents the jth column, and the value of the jth entry indicates which row the queen is on.  (This assumes that there is only 1 queen per column.)  If there are no queens in the (j+1)th column up to the board-sizeth column, the (j+1)th up to the board-size entries can be omitted from the representation.  For example, if board-size = 3 and we have the following position:
 ;0 0 0
 ;0 1 0
@@ -76,20 +78,20 @@
 
 ; safe checks if the queen in the kth column is safe, given a position consisting of queens only in the first k columns (1 per column), and where the queens in the first k-1 columns are all safe with respect to each other.
 (define (safe? k position)
-  (define (same-row? col1 col2) (= (col1 col2)))
+  (define (same-row? col1 col2) (= col1 col2))
   (define (same-diag? queen1-row queen1-col queen2-row queen2-col)
     (let ((col-diff (- queen2-col queen1-col)))
       (cond ((or (= (+ queen1-row col-diff) queen2-row)
                  (= (- queen1-row col-diff) queen2-row))
-             false)
-            (else true))))
+             true)
+            (else false))))
   (let ((kth-col (list-ref position (- k 1))))
     (accumulate (lambda (x y) (and x y))
                 true
                 (map (lambda (i)
                        (let ((ith-col (list-ref position (- i 1))))
-                         (and (not (same-row? (ith-col kth-col)))
-                              (not (same-diag? (ith-col i kth-col k))))))
+                         (and (not (same-row? ith-col kth-col))
+                              (not (same-diag? ith-col i kth-col k)))))
                      (enumerate-interval 1 (- k 1))))))
 
 
@@ -116,4 +118,26 @@
   (queen-cols board-size))
 
 (display (queens 1))
+(newline)
+;((1))
 (display (queens 2))
+(newline)
+;()
+(display (queens 3))
+(newline)
+;()
+(display (queens 4))
+(newline)
+;((2 4 1 3) (3 1 4 2))
+(display (queens 5))
+(newline)
+;((1 3 5 2 4) (1 4 2 5 3) (2 4 1 3 5) (2 5 3 1 4) (3 1 4 2 5) (3 5 2 4 1) (4 1 3 5 2) (4 2 5 3 1) (5 2 4 1 3) (5 3 1 4 2))
+(display (queens 6))
+(newline)
+;((2 4 6 1 3 5) (3 6 2 5 1 4) (4 1 5 2 6 3) (5 3 1 6 4 2))
+(display (length (queens 7)))
+(newline)
+;40
+(display (length (queens 8)))
+(newline)
+;92
