@@ -22,3 +22,6 @@
 (display (union-set '(a b c) '(b d e c a z t)))
 (newline)
 ;(b d e c a z t)
+
+(display (union-set '(b d e c a z t) '(a b c)))
+;(d e z t a b c)
