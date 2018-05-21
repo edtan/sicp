@@ -16,7 +16,7 @@
 ;(x x y z x)
 
 ; for union-set, we can simply append the two sets together
-; because we don't call element-of-set? anymore, the run time has changed from O(n) to O(1).
+; because we don't call element-of-set? anymore, the run time has changed from O(n^2) to O(1).
 (define (union-set set1 set2) (append set1 set2))
 (display (union-set '(x y z) '(y y z)))
 
